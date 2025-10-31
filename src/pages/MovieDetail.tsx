@@ -88,20 +88,12 @@ export default function MovieDetailPage() {
           />
         </div>
       )}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "220px 1fr",
-          gap: 16,
-          alignItems: "start",
-          marginBottom: 24,
-        }}
-      >
+      <div className="detail-grid">
         {movie.poster_path && (
           <img
+            className="detail-poster"
             src={buildImageUrl(movie.poster_path, "w342")}
             alt={movie.title}
-            style={{ width: 220, borderRadius: 12 }}
           />
         )}
         <div>
@@ -158,13 +150,7 @@ export default function MovieDetailPage() {
 
       <section style={{ marginBottom: 24 }}>
         <h2 style={{ marginBottom: 12, color: "#e5e7eb" }}>Pemeran</h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))",
-            gap: 12,
-          }}
-        >
+        <div className="cast-grid">
           {cast.map((a) => (
             <div
               key={a.id}
@@ -216,13 +202,7 @@ export default function MovieDetailPage() {
 
       <section>
         <h2 style={{ marginBottom: 12, color: "#e5e7eb" }}>Mirip dengan ini</h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))",
-            gap: 16,
-          }}
-        >
+        <div className="similar-grid">
           {similar.map((m) => (
             <Link
               key={m.id}

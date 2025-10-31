@@ -95,6 +95,34 @@ body {
 @keyframes fadeDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 @keyframes floatUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
+/* Movie detail responsive */
+.detail-grid { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: start; margin-bottom: 24px; }
+.detail-poster { width: 220px; border-radius: 12px; }
+.cast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+.similar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+
+@media (max-width: 680px) {
+  .detail-grid { grid-template-columns: 1fr; }
+  .detail-poster { width: 100%; max-width: 320px; justify-self: center; }
+  .cast-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+  .similar-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Player page */
+.player-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.back-link { color: #e5e7eb; text-decoration: none; border: 1px solid rgba(255,255,255,0.08); padding: 8px 10px; border-radius: 10px; background: linear-gradient(180deg, rgba(17,24,39,0.85), rgba(17,24,39,0.7)); }
+.player-controls { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.pill { border: 1px solid rgba(255,255,255,0.12); color: #cbd5e1; background: rgba(255,255,255,0.05); border-radius: 999px; padding: 6px 10px; font-size: 12px; text-decoration: none; cursor: pointer; }
+.pill.active { border-color: rgba(34,211,238,0.55); box-shadow: 0 0 0 3px rgba(34,211,238,0.12) inset; color: #22d3ee; }
+.player-box { aspect-ratio: 16/9; width: 100%; max-width: 1200px; margin: 0 auto; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.5); }
+.player-note { color: #9ca3af; font-size: 12px; margin-top: 8px; text-align: center; }
+
+/* Notice */
+.notice { position: relative; border: 1px solid rgba(255,255,255,0.12); background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)); color: #e5e7eb; padding: 10px 36px 10px 12px; border-radius: 12px; margin-bottom: 12px; }
+.notice strong { color: #fde047; }
+.notice a { color: #22d3ee; text-decoration: none; }
+.notice-close { position: absolute; right: 8px; top: 8px; width: 28px; height: 28px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.12); background: rgba(0,0,0,0.25); color: #cbd5e1; cursor: pointer; }
+
 .banner {
   position: relative;
   margin: 12px auto 20px auto;

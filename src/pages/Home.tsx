@@ -75,11 +75,6 @@ export default function Home() {
 
   return (
     <div>
-      <div className="top-tagline">
-        <span className="top-tagline-text">
-          kapan lagi wok streaming gada iklan
-        </span>
-      </div>
       <BannerCarousel movies={trending} />
       <div className="search">
         <input
