@@ -30,10 +30,20 @@ body {
 .app-header {
   position: sticky;
   top: 0;
-  z-index: 10;
-  backdrop-filter: blur(8px);
-  background: linear-gradient(180deg, rgba(11,15,23,0.85), rgba(11,15,23,0.65));
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  z-index: 200;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(11,15,23,0.99);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.app-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(11,15,23,0.95);
+  z-index: -1;
 }
 
 .app-header-inner {
@@ -52,6 +62,146 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  transition: transform 0.2s ease;
+}
+
+.brand:hover {
+  transform: scale(1.05);
+}
+
+.brand-icon {
+  font-size: 24px;
+  filter: drop-shadow(0 2px 4px rgba(34,211,238,0.3));
+  animation: brand-icon-pulse 3s ease-in-out infinite;
+}
+
+@keyframes brand-icon-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  color: #9ca3af;
+  text-decoration: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #e5e7eb;
+  background: rgba(255,255,255,0.05);
+}
+
+.nav-link.active {
+  color: #22d3ee;
+  background: rgba(34,211,238,0.1);
+}
+
+.nav-link.active::after {
+  content: "";
+  position: absolute;
+  bottom: 2px;
+  left: 12px;
+  right: 12px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+  border-radius: 2px;
+}
+
+.nav-ai-btn {
+  background: rgba(145,70,255,0.1);
+  border: 1px solid rgba(145,70,255,0.3);
+  color: #c4b5fd;
+}
+
+.nav-ai-btn:hover {
+  background: rgba(145,70,255,0.2);
+  border-color: rgba(145,70,255,0.5);
+  color: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+.nav-ai-badge {
+  font-size: 12px;
+  animation: sparkle 2s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+}
+
+.nav-external {
+  opacity: 0.8;
+}
+
+.nav-external:hover {
+  opacity: 1;
+}
+
+
+@media (max-width: 768px) {
+  .app-header-inner {
+    padding: 12px 16px;
+  }
+  
+  .brand {
+    font-size: 18px;
+  }
+  
+  .brand-icon {
+    font-size: 20px;
+  }
+  
+  .nav-links {
+    gap: 4px;
+  }
+  
+  .nav-link {
+    padding: 6px 8px;
+    font-size: 13px;
+    gap: 4px;
+  }
+  
+  .nav-link span {
+    display: inline;
+  }
+  
+  .nav-link svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .main {
@@ -189,6 +339,7 @@ body {
   overflow: hidden;
   background: linear-gradient(135deg, #0b111b 0%, #18233a 100%);
   box-shadow: 0 14px 36px rgba(0,0,0,0.45);
+  z-index: 1;
 }
 .banner-bg {
   position: absolute;
@@ -198,6 +349,7 @@ body {
   object-fit: cover;
   filter: saturate(1.1) contrast(1.05);
   z-index: 1;
+  pointer-events: none;
 }
 .banner-bg-placeholder {
   position: absolute;
