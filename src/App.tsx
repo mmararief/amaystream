@@ -2,7 +2,7 @@ import { Outlet, Link } from "react-router-dom";
 import { useRef } from "react";
 import AIBottomSearch from "./components/AIBottomSearch";
 import type { AIBottomSearchHandle } from "./components/AIBottomSearch";
-import { AISearchContext } from "./contexts/AISearchContext";
+import { AISearchProvider } from "./contexts/AISearchContext";
 
 export default function App() {
   const aiSearchRef = useRef<AIBottomSearchHandle>(null);
@@ -12,7 +12,7 @@ export default function App() {
   };
 
   return (
-    <AISearchContext.Provider value={{ openAISearch }}>
+    <AISearchProvider openAISearch={openAISearch}>
       <div className="app-wrap">
         <header className="app-header">
           <div className="app-header-inner">
@@ -46,6 +46,6 @@ export default function App() {
         </main>
         <AIBottomSearch ref={aiSearchRef} />
       </div>
-    </AISearchContext.Provider>
+    </AISearchProvider>
   );
 }

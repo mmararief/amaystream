@@ -45,9 +45,10 @@ export default function MoviePlayer() {
         <iframe
           src={src}
           width="100%"
-          height="600"
+          height="100%"
           frameBorder="0"
           allowFullScreen
+          style={{ display: "block", border: "none" }}
         />
       </div>
       <p className="player-note">

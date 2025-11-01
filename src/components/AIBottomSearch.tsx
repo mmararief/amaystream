@@ -1,10 +1,4 @@
-import {
-  useState,
-  useEffect,
-  useImperativeHandle,
-  forwardRef,
-  useRef,
-} from "react";
+import { useState, useImperativeHandle, forwardRef, useRef } from "react";
 import { Link } from "react-router-dom";
 import { searchMovieByDescription } from "../services/gemini";
 import { buildImageUrl, fetchMovieDetail } from "../services/tmdb";
@@ -15,7 +9,7 @@ type MovieResult = {
   poster_path: string | null;
   vote_average: number;
   release_date?: string;
-  overview?: string;
+  backdrop_path?: string | null;
 };
 
 export interface AIBottomSearchHandle {
@@ -25,10 +19,9 @@ export interface AIBottomSearchHandle {
 const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-  const [results, setResults] = useState<MovieResult[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+  const [results, setResults] = useState<MovieResult[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useImperativeHandle(ref, () => ({
@@ -45,7 +38,6 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
     if (!query.trim()) return;
 
     setIsSearching(true);
-    setResults([]);
     setError(null);
 
     try {
@@ -54,7 +46,6 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
       if (!aiResults || aiResults.length === 0) {
         setError("Film tidak ditemukan. Coba deskripsi yang lebih spesifik.");
         setIsSearching(false);
-        setIsModalOpen(true); // Buka modal hanya jika ada hasil atau error
         return;
       }
 
@@ -66,46 +57,25 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
       const validResults = movieDetails.filter(
         (m): m is MovieResult => m !== null
       );
-      setResults(validResults);
 
       if (validResults.length === 0) {
         setError("Tidak ada film yang ditemukan.");
+        setIsSearching(false);
+        return;
       }
 
-      // Buka modal setelah hasil siap
-      setIsModalOpen(true);
+      // Set results untuk ditampilkan di floating panel
+      setResults(validResults);
+
+      // Close search bar after successful search (but keep floating panel open)
+      setIsSearchBarOpen(false);
+      setQuery("");
     } catch (err: any) {
       setError(err.message || "Terjadi kesalahan saat mencari film.");
-      setIsModalOpen(true); // Buka modal untuk menampilkan error
     } finally {
       setIsSearching(false);
     }
   };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setError(null);
-    setResults([]);
-  };
-
-  // Close modal on ESC key
-  useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        handleCloseModal();
-      }
-    };
-
-    if (isModalOpen) {
-      document.addEventListener("keydown", handleEsc);
-      document.body.style.overflow = "hidden";
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEsc);
-      document.body.style.overflow = "unset";
-    };
-  }, [isModalOpen]);
 
   return (
     <>
@@ -247,103 +217,70 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
         )}
       </div>
 
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="ai-modal-overlay" onClick={handleCloseModal}>
-          <div
-            className="ai-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="ai-modal-header">
-              <h2 className="ai-modal-title">
-                {isSearching
-                  ? "Mencari rekomendasi..."
-                  : results.length > 0
-                  ? `✨ ${results.length} Rekomendasi`
-                  : "Hasil Pencarian"}
-              </h2>
-              <button
-                className="ai-modal-close"
-                onClick={handleCloseModal}
-                aria-label="Close"
+      {/* Error Display */}
+      {error && isSearchBarOpen && (
+        <div className="ai-bottom-error">
+          <span>⚠️</span>
+          <p>{error}</p>
+        </div>
+      )}
+
+      {/* Floating Results Panel */}
+      {results.length > 0 && !isSearchBarOpen && (
+        <div className="ai-results-floating">
+          <div className="ai-results-floating-header">
+            <h3 className="ai-results-floating-title">
+              ✨ {results.length} Rekomendasi AI
+            </h3>
+            <button
+              className="ai-results-floating-close"
+              onClick={() => setResults([])}
+              aria-label="Close"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M15 5L5 15M5 5l10 10"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
+          <div className="ai-results-floating-grid">
+            {results.map((result, idx) => (
+              <Link
+                key={result.id}
+                to={`/movie/${result.id}`}
+                className="ai-results-floating-item card-ai"
+                onClick={() => setResults([])}
+                style={{
+                  animationDelay: `${idx * 0.05}s`,
+                }}
               >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M15 5L5 15M5 5l10 10"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
+                <div className="edge-border"></div>
+                {result.poster_path ? (
+                  <img
+                    src={buildImageUrl(result.poster_path, "w342")}
+                    alt={result.title}
+                    className="ai-results-floating-poster"
                   />
-                </svg>
-              </button>
-            </div>
-
-            <div className="ai-modal-body">
-              {isSearching && (
-                <div className="ai-modal-loading">
-                  <div className="ai-modal-spinner"></div>
-                  <p>Mencari film berdasarkan deskripsi Anda...</p>
+                ) : (
+                  <div className="ai-results-floating-poster-placeholder">
+                    🎬
+                  </div>
+                )}
+                <div className="card-body">
+                  <div className="title">{result.title}</div>
+                  <div className="meta">
+                    ⭐ {result.vote_average.toFixed(1)}
+                    {result.release_date
+                      ? ` · ${result.release_date.slice(0, 4)}`
+                      : ""}
+                  </div>
                 </div>
-              )}
-
-              {error && (
-                <div className="ai-modal-error">
-                  <span>⚠️</span>
-                  <p>{error}</p>
-                </div>
-              )}
-
-              {!isSearching && results.length > 0 && (
-                <div className="ai-modal-results">
-                  {results.map((result, idx) => (
-                    <Link
-                      key={result.id}
-                      to={`/movie/${result.id}`}
-                      className="ai-modal-result-item"
-                      onClick={handleCloseModal}
-                      style={{
-                        animationDelay: `${idx * 0.05}s`,
-                      }}
-                    >
-                      {result.poster_path ? (
-                        <img
-                          src={buildImageUrl(result.poster_path, "w342")}
-                          alt={result.title}
-                          className="ai-modal-poster"
-                        />
-                      ) : (
-                        <div className="ai-modal-poster-placeholder">🎬</div>
-                      )}
-                      <div className="ai-modal-result-info">
-                        <h3 className="ai-modal-result-title">
-                          {result.title}
-                        </h3>
-                        <div className="ai-modal-result-meta">
-                          <span className="ai-modal-rating">
-                            ⭐ {result.vote_average.toFixed(1)}
-                          </span>
-                          {result.release_date && (
-                            <span className="ai-modal-year">
-                              {result.release_date.slice(0, 4)}
-                            </span>
-                          )}
-                        </div>
-                        {result.overview && (
-                          <p className="ai-modal-overview">
-                            {result.overview.length > 120
-                              ? `${result.overview.slice(0, 120)}...`
-                              : result.overview}
-                          </p>
-                        )}
-                        <div className="ai-modal-badge">
-                          ✨ AI Recommendation
-                        </div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
+              </Link>
+            ))}
           </div>
         </div>
       )}
