@@ -181,9 +181,9 @@ export default function Home() {
     <div className="home-page">
       <BannerCarousel movies={trending} />
 
-      <section className="home-section">
+      {/* <section className="home-section">
         <AISearch />
-      </section>
+      </section> */}
 
       <section className="home-section">
         <div className="section-header">

@@ -1,4 +1,5 @@
 import { Outlet, Link } from "react-router-dom";
+import AIBottomSearch from "./components/AIBottomSearch";
 
 export default function App() {
   return (
@@ -33,6 +34,7 @@ export default function App() {
       <main className="main">
         <Outlet />
       </main>
+      <AIBottomSearch />
     </div>
   );
 }
