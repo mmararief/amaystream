@@ -10,7 +10,7 @@ export default function MoviePlayer() {
     if (dismissed) setShowNotice(false);
   }, []);
 
-  const src = `https://xprime.tv/watch/${id}`;
+  const src = `https://www.vidking.net/embed/movie/${id}?color=9146ff&autoPlay=true`;
 
   if (!id) return <p>TMDB id tidak valid.</p>;
 
@@ -45,8 +45,8 @@ export default function MoviePlayer() {
         <iframe
           src={src}
           width="100%"
-          height="100%"
-          style={{ width: "100%", height: "100%", border: 0, display: "block" }}
+          height="600"
+          frameBorder="0"
           allowFullScreen
         />
       </div>

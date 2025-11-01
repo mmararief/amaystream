@@ -1126,6 +1126,48 @@ body {
   animation: ai-search-expand 0.3s ease;
 }
 
+/* Template Questions */
+.ai-bottom-templates {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  animation: ai-search-expand 0.3s ease;
+  animation-delay: 0.1s;
+  animation-fill-mode: both;
+}
+
+.ai-bottom-template-item {
+  padding: 8px 16px;
+  background: rgba(145,70,255,0.1);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(145,70,255,0.3);
+  border-radius: 20px;
+  color: #e5e7eb;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.ai-bottom-template-item:hover:not(:disabled) {
+  background: rgba(145,70,255,0.2);
+  border-color: rgba(145,70,255,0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(145,70,255,0.3);
+}
+
+.ai-bottom-template-item:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.ai-bottom-template-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 @keyframes ai-search-expand {
   from {
     opacity: 0;
@@ -1534,6 +1576,16 @@ body {
     display: none;
   }
   
+  .ai-bottom-templates {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .ai-bottom-template-item {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+  
   .ai-bottom-input-wrapper {
     padding: 8px 12px;
     border-radius: 24px;
@@ -1576,5 +1628,132 @@ body {
     width: 100%;
     height: 200px;
     align-self: center;
+  }
+}
+
+/* AI Search Notification */
+.ai-search-notification {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  max-width: 500px;
+  width: calc(100% - 40px);
+  background: linear-gradient(135deg, rgba(145,70,255,0.15) 0%, rgba(34,211,238,0.15) 100%);
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(145,70,255,0.4);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 
+    0 8px 32px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(145,70,255,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: slideDownNotification 0.5s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.ai-search-notification:hover {
+  background: linear-gradient(135deg, rgba(145,70,255,0.25) 0%, rgba(34,211,238,0.25) 100%);
+  border-color: rgba(145,70,255,0.6);
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 
+    0 12px 40px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(145,70,255,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+@keyframes slideDownNotification {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.ai-search-notification-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.ai-search-notification-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.ai-search-notification-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #e5e7eb;
+}
+
+.ai-search-notification-text strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.ai-search-notification-text span {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.ai-search-notification-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.05);
+  color: #9ca3af;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ai-search-notification-close:hover {
+  background: rgba(255,255,255,0.1);
+  color: #e5e7eb;
+}
+
+@media (max-width: 680px) {
+  .ai-search-notification {
+    top: 70px;
+    padding: 14px 16px;
+  }
+  
+  .ai-search-notification-text strong {
+    font-size: 14px;
+  }
+  
+  .ai-search-notification-text span {
+    font-size: 12px;
+  }
+  
+  .ai-search-notification-icon {
+    font-size: 20px;
   }
 }

@@ -1,4 +1,10 @@
-import { useState, useEffect } from "react";
+import {
+  useState,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+  useRef,
+} from "react";
 import { Link } from "react-router-dom";
 import { searchMovieByDescription } from "../services/gemini";
 import { buildImageUrl, fetchMovieDetail } from "../services/tmdb";
@@ -12,13 +18,28 @@ type MovieResult = {
   overview?: string;
 };
 
-export default function AIBottomSearch() {
+export interface AIBottomSearchHandle {
+  openAndFocus: () => void;
+}
+
+const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
   const [query, setQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [results, setResults] = useState<MovieResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSearchBarOpen, setIsSearchBarOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    openAndFocus: () => {
+      setIsSearchBarOpen(true);
+      // Focus input setelah state update
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+    },
+  }));
 
   const handleSearch = async () => {
     if (!query.trim()) return;
@@ -26,7 +47,6 @@ export default function AIBottomSearch() {
     setIsSearching(true);
     setResults([]);
     setError(null);
-    setIsModalOpen(true); // Buka modal untuk menampilkan loading
 
     try {
       const aiResults = await searchMovieByDescription(query);
@@ -34,6 +54,7 @@ export default function AIBottomSearch() {
       if (!aiResults || aiResults.length === 0) {
         setError("Film tidak ditemukan. Coba deskripsi yang lebih spesifik.");
         setIsSearching(false);
+        setIsModalOpen(true); // Buka modal hanya jika ada hasil atau error
         return;
       }
 
@@ -46,12 +67,16 @@ export default function AIBottomSearch() {
         (m): m is MovieResult => m !== null
       );
       setResults(validResults);
-      
+
       if (validResults.length === 0) {
         setError("Tidak ada film yang ditemukan.");
       }
+
+      // Buka modal setelah hasil siap
+      setIsModalOpen(true);
     } catch (err: any) {
       setError(err.message || "Terjadi kesalahan saat mencari film.");
+      setIsModalOpen(true); // Buka modal untuk menampilkan error
     } finally {
       setIsSearching(false);
     }
@@ -85,79 +110,123 @@ export default function AIBottomSearch() {
   return (
     <>
       {/* Fixed Bottom Search Bar */}
-      <div className={`ai-bottom-search ${isSearchBarOpen ? "ai-bottom-search-open" : ""}`}>
+      <div
+        className={`ai-bottom-search ${
+          isSearchBarOpen ? "ai-bottom-search-open" : ""
+        }`}
+      >
         {isSearchBarOpen ? (
-          <div className={`ai-bottom-input-wrapper ${isSearching ? "ai-bottom-searching" : ""}`}>
-            <button
-              className="ai-bottom-close-btn"
-              onClick={() => {
-                setIsSearchBarOpen(false);
-                setQuery("");
-                setError(null);
-              }}
-              aria-label="Close"
-            >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M15 5L5 15M5 5l10 10"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSearch();
-                }
-              }}
-              placeholder="Apa yang ingin Anda tonton? Ceritakan di sini..."
-              className="ai-bottom-input"
-              disabled={isSearching}
-              autoFocus
-            />
-            <div className="ai-bottom-actions">
+          <>
+            {/* Template Questions */}
+            <div className="ai-bottom-templates">
               <button
-                className="ai-bottom-btn ai-bottom-add"
-                onClick={() => setQuery("")}
-                disabled={!query.trim()}
-                aria-label="Clear"
+                className="ai-bottom-template-item"
+                onClick={() => {
+                  setQuery("Film horor Indonesia yang menyeramkan");
+                  setTimeout(() => inputRef.current?.focus(), 0);
+                }}
+                disabled={isSearching}
               >
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                🎬 Film horor Indonesia
+              </button>
+              <button
+                className="ai-bottom-template-item"
+                onClick={() => {
+                  setQuery("Action dengan superhero yang seru");
+                  setTimeout(() => inputRef.current?.focus(), 0);
+                }}
+                disabled={isSearching}
+              >
+                💥 Action superhero
+              </button>
+              <button
+                className="ai-bottom-template-item"
+                onClick={() => {
+                  setQuery("Film romantis yang mengharukan");
+                  setTimeout(() => inputRef.current?.focus(), 0);
+                }}
+                disabled={isSearching}
+              >
+                ❤️ Romantis mengharukan
+              </button>
+            </div>
+            <div
+              className={`ai-bottom-input-wrapper ${
+                isSearching ? "ai-bottom-searching" : ""
+              }`}
+            >
+              <button
+                className="ai-bottom-close-btn"
+                onClick={() => {
+                  setIsSearchBarOpen(false);
+                  setQuery("");
+                  setError(null);
+                }}
+                aria-label="Close"
+              >
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                   <path
-                    d="M8 4V12M4 8H12"
+                    d="M15 5L5 15M5 5l10 10"
                     stroke="currentColor"
-                    strokeWidth="1.5"
+                    strokeWidth="2"
                     strokeLinecap="round"
                   />
                 </svg>
               </button>
-              <button
-                className="ai-bottom-btn ai-bottom-search-btn"
-                onClick={handleSearch}
-                disabled={isSearching || !query.trim()}
-                aria-label="Search"
-              >
-                {isSearching ? (
-                  <div className="ai-bottom-spinner"></div>
-                ) : (
+              <input
+                ref={inputRef}
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
+                placeholder="Apa yang ingin Anda tonton? Ceritakan di sini..."
+                className="ai-bottom-input"
+                disabled={isSearching}
+                autoFocus
+              />
+              <div className="ai-bottom-actions">
+                <button
+                  className="ai-bottom-btn ai-bottom-add"
+                  onClick={() => setQuery("")}
+                  disabled={!query.trim()}
+                  aria-label="Clear"
+                >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                     <path
-                      d="M7.333 12.667A5.333 5.333 0 1 0 7.333 2a5.333 5.333 0 0 0 0 10.667ZM14 14l-2.9-2.9"
+                      d="M8 4V12M4 8H12"
                       stroke="currentColor"
                       strokeWidth="1.5"
                       strokeLinecap="round"
-                      strokeLinejoin="round"
                     />
                   </svg>
-                )}
-              </button>
+                </button>
+                <button
+                  className="ai-bottom-btn ai-bottom-search-btn"
+                  onClick={handleSearch}
+                  disabled={isSearching || !query.trim()}
+                  aria-label="Search"
+                >
+                  {isSearching ? (
+                    <div className="ai-bottom-spinner"></div>
+                  ) : (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path
+                        d="M7.333 12.667A5.333 5.333 0 1 0 7.333 2a5.333 5.333 0 0 0 0 10.667ZM14 14l-2.9-2.9"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
-          </div>
+          </>
         ) : (
           <button
             className="ai-bottom-toggle-btn"
@@ -243,9 +312,7 @@ export default function AIBottomSearch() {
                           className="ai-modal-poster"
                         />
                       ) : (
-                        <div className="ai-modal-poster-placeholder">
-                          🎬
-                        </div>
+                        <div className="ai-modal-poster-placeholder">🎬</div>
                       )}
                       <div className="ai-modal-result-info">
                         <h3 className="ai-modal-result-title">
@@ -268,7 +335,9 @@ export default function AIBottomSearch() {
                               : result.overview}
                           </p>
                         )}
-                        <div className="ai-modal-badge">✨ AI Recommendation</div>
+                        <div className="ai-modal-badge">
+                          ✨ AI Recommendation
+                        </div>
                       </div>
                     </Link>
                   ))}
@@ -280,5 +349,8 @@ export default function AIBottomSearch() {
       )}
     </>
   );
-}
+});
 
+AIBottomSearch.displayName = "AIBottomSearch";
+
+export default AIBottomSearch;

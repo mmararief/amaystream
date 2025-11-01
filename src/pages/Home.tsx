@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import BannerCarousel from "../components/BannerCarousel";
 import MovieFilters from "../components/MovieFilters";
 import { useSEO } from "../hooks/useSEO";
+import AISearchNotification from "../components/AISearchNotification";
 
 // Helper untuk menentukan ukuran gambar optimal berdasarkan viewport
 function getOptimalImageSize(): "w185" | "w342" | "w500" {
@@ -178,6 +179,7 @@ export default function Home() {
 
   return (
     <div className="home-page">
+      <AISearchNotification />
       <BannerCarousel movies={trending} />
 
       {/* <section className="home-section">
