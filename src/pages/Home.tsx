@@ -9,7 +9,6 @@ import {
 } from "../services/tmdb";
 import { Link } from "react-router-dom";
 import BannerCarousel from "../components/BannerCarousel";
-import AISearch from "../components/AISearch";
 import MovieFilters from "../components/MovieFilters";
 import { useSEO } from "../hooks/useSEO";
 
