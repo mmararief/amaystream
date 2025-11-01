@@ -6,6 +6,7 @@ import {
   fetchSimilarMovies,
   buildImageUrl,
 } from "../services/tmdb";
+import { useSEO } from "../hooks/useSEO";
 
 type MovieDetail = {
   id: number;
@@ -73,6 +74,33 @@ export default function MovieDetailPage() {
       cancelled = true;
     };
   }, [movieId]);
+
+  // SEO
+  useSEO({
+    title: movie?.title,
+    description: movie?.overview,
+    image: movie?.backdrop_path
+      ? buildImageUrl(movie.backdrop_path, "w780")
+      : movie?.poster_path
+      ? buildImageUrl(movie.poster_path, "w500")
+      : undefined,
+    url: movie ? `https://amaystream.vercel.app/movie/${movie.id}` : undefined,
+    type: "website",
+    movie: movie
+      ? {
+          title: movie.title,
+          description: movie.overview || "",
+          image: movie.backdrop_path
+            ? buildImageUrl(movie.backdrop_path, "w780")
+            : movie.poster_path
+            ? buildImageUrl(movie.poster_path, "w500")
+            : undefined,
+          releaseDate: movie.release_date,
+          rating: movie.vote_average,
+          actors: cast.slice(0, 5).map((c) => c.name),
+        }
+      : undefined,
+  });
 
   if (isLoading) return <p>Memuat...</p>;
   if (!movie) return <p>Film tidak ditemukan.</p>;

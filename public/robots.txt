@@ -1,6 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /movie/*/watch
 
-Sitemap: /sitemap.xml
-
-
+Sitemap: https://amaystream.vercel.app/sitemap.xml
