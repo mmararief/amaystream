@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 export default function MoviePlayer() {
   const { id } = useParams<{ id: string }>();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [showNotice, setShowNotice] = useState(true);
 
   useEffect(() => {
@@ -11,16 +10,7 @@ export default function MoviePlayer() {
     if (dismissed) setShowNotice(false);
   }, []);
 
-  const src = useMemo(() => {
-    const base = `https://www.vidking.net/embed/movie/${id}`;
-    const params = new URLSearchParams();
-    const color = searchParams.get("color");
-    const autoPlay = searchParams.get("autoPlay");
-    if (color) params.set("color", color);
-    if (autoPlay) params.set("autoPlay", autoPlay);
-    const qs = params.toString();
-    return qs ? `${base}?${qs}` : base;
-  }, [id, searchParams]);
+  const src = `https://xprime.tv/watch/${id}`;
 
   if (!id) return <p>TMDB id tidak valid.</p>;
 
@@ -50,43 +40,6 @@ export default function MoviePlayer() {
         <Link to="/" className="back-link">
           ← Kembali
         </Link>
-        <div className="player-controls">
-          <button
-            className={`pill ${
-              searchParams.get("autoPlay") === "true" ? "active" : ""
-            }`}
-            onClick={() => {
-              const next = new URLSearchParams(searchParams);
-              const cur = next.get("autoPlay") === "true";
-              if (cur) next.delete("autoPlay");
-              else next.set("autoPlay", "true");
-              setSearchParams(next);
-            }}
-          >
-            AutoPlay
-          </button>
-          <span style={{ fontSize: 12, color: "#6b7280" }}>Warna:</span>
-          {[
-            { key: "e50914", label: "Merah" },
-            { key: "22d3ee", label: "Cyan" },
-            { key: "10b981", label: "Hijau" },
-          ].map((c) => (
-            <button
-              key={c.key}
-              className={`pill ${
-                searchParams.get("color") === c.key ? "active" : ""
-              }`}
-              onClick={() => {
-                const next = new URLSearchParams(searchParams);
-                if (next.get("color") === c.key) next.delete("color");
-                else next.set("color", c.key);
-                setSearchParams(next);
-              }}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
       </div>
       <div className="player-box">
         <iframe

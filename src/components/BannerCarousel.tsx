@@ -39,20 +39,19 @@ export default function BannerCarousel({
         {movies.map((t) => (
           <SwiperSlide key={t.id}>
             <Link to={`/movie/${t.id}`} style={{ textDecoration: "none" }}>
-              <div
-                className="banner-card"
-                style={{ minWidth: "unset", maxWidth: "unset", width: "100%" }}
-              >
-                {t.poster_path ? (
+              <div className="banner-card">
+                {t.backdrop_path || t.poster_path ? (
                   <img
                     className="banner-bg"
                     src={buildImageUrl(
-                      t.backdrop_path || t.poster_path,
+                      t.backdrop_path || t.poster_path || "",
                       "w780"
                     )}
                     alt={t.title}
                   />
-                ) : null}
+                ) : (
+                  <div className="banner-bg-placeholder" />
+                )}
                 <div className="banner-grad" />
                 <div className="banner-body">
                   <div className="banner-title">{t.title}</div>
@@ -61,10 +60,7 @@ export default function BannerCarousel({
                     {t.release_date ? `· ${t.release_date.slice(0, 4)}` : ""}
                   </div>
                   <div className="banner-actions">
-                    <Link
-                      to={`/movie/${t.id}/watch?autoPlay=true`}
-                      className="btn-primary"
-                    >
+                    <Link to={`/movie/${t.id}/watch`} className="btn-primary">
                       Tonton ▶
                     </Link>
                     <Link to={`/movie/${t.id}`} className="btn-ghost">

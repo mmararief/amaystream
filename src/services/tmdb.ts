@@ -52,4 +52,32 @@ export async function fetchTrendingMovies(timeWindow: 'day' | 'week' = 'day') {
   return request<{ page: number; results: any[]; total_pages: number }>(`/trending/movie/${timeWindow}`)
 }
 
+export async function fetchGenres() {
+  return request<{ genres: Array<{ id: number; name: string }> }>(`/genre/movie/list`)
+}
+
+export type DiscoverFilters = {
+  genre?: number | null
+  year?: number | null
+  minRating?: number | null
+  sortBy?: 'popularity.desc' | 'popularity.asc' | 'vote_average.desc' | 'vote_average.asc' | 'release_date.desc' | 'release_date.asc'
+}
+
+export async function discoverMovies(filters: DiscoverFilters = {}, page = 1) {
+  const params: Record<string, string | number> = { page }
+  
+  if (filters.genre) params.with_genres = filters.genre
+  if (filters.year) {
+    params.primary_release_year = filters.year
+  }
+  if (filters.minRating !== null && filters.minRating !== undefined) {
+    params['vote_average.gte'] = filters.minRating
+  }
+  if (filters.sortBy) {
+    params.sort_by = filters.sortBy
+  }
+  
+  return request<{ page: number; results: any[]; total_pages: number }>(`/discover/movie`, params)
+}
+
 

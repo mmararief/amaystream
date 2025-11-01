@@ -100,7 +100,7 @@ export default function MovieDetailPage() {
           <h1 style={{ margin: "8px 0", color: "#e5e7eb" }}>{movie.title}</h1>
           <div style={{ marginBottom: 12 }}>
             <Link
-              to={`/movie/${movie.id}/watch?autoPlay=true`}
+              to={`/movie/${movie.id}/watch`}
               style={{
                 display: "inline-block",
                 padding: "10px 14px",
