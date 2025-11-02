@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { HiX, HiSparkles } from "react-icons/hi";
 import { useAISearch } from "../contexts/AISearchContext";
 
 export default function AISearchNotification() {
@@ -41,7 +42,7 @@ export default function AISearchNotification() {
   return (
     <div className="ai-search-notification" onClick={handleClick}>
       <div className="ai-search-notification-content">
-        <div className="ai-search-notification-icon">✨</div>
+        <HiSparkles className="ai-search-notification-icon" size={24} />
         <div className="ai-search-notification-text">
           <strong>Pusing mau cari film apa?</strong>
           <span>Coba cari di AI yuk!</span>
@@ -52,14 +53,7 @@ export default function AISearchNotification() {
         onClick={handleClose}
         aria-label="Tutup"
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path
-            d="M12 4L4 12M4 4l8 8"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </svg>
+        <HiX size={16} />
       </button>
     </div>
   );

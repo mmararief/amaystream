@@ -1,5 +1,14 @@
 import { useState, useImperativeHandle, forwardRef, useRef } from "react";
 import { Link } from "react-router-dom";
+import {
+  HiX,
+  HiPlus,
+  HiSearch,
+  HiFilm,
+  HiSparkles,
+  HiExclamation,
+} from "react-icons/hi";
+import { HiStar } from "react-icons/hi2";
 import { searchMovieByDescription } from "../services/gemini";
 import { buildImageUrl, fetchMovieDetail } from "../services/tmdb";
 
@@ -97,7 +106,11 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
                 }}
                 disabled={isSearching}
               >
-                🎬 Film horor Indonesia
+                <HiFilm
+                  size={16}
+                  style={{ marginRight: 6, verticalAlign: "middle" }}
+                />
+                Film horor Indonesia
               </button>
               <button
                 className="ai-bottom-template-item"
@@ -134,14 +147,7 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
                 }}
                 aria-label="Close"
               >
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M15 5L5 15M5 5l10 10"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                <HiX size={20} />
               </button>
               <input
                 ref={inputRef}
@@ -165,14 +171,7 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
                   disabled={!query.trim()}
                   aria-label="Clear"
                 >
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path
-                      d="M8 4V12M4 8H12"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+                  <HiPlus size={16} />
                 </button>
                 <button
                   className="ai-bottom-btn ai-bottom-search-btn"
@@ -183,15 +182,7 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
                   {isSearching ? (
                     <div className="ai-bottom-spinner"></div>
                   ) : (
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <path
-                        d="M7.333 12.667A5.333 5.333 0 1 0 7.333 2a5.333 5.333 0 0 0 0 10.667ZM14 14l-2.9-2.9"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <HiSearch size={16} />
                   )}
                 </button>
               </div>
@@ -203,15 +194,7 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
             onClick={() => setIsSearchBarOpen(true)}
             aria-label="Open AI Search"
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
+            <HiSparkles size={24} />
             <span className="ai-bottom-toggle-text">AI Search</span>
           </button>
         )}
@@ -220,7 +203,7 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
       {/* Error Display */}
       {error && isSearchBarOpen && (
         <div className="ai-bottom-error">
-          <span>⚠️</span>
+          <HiExclamation size={20} />
           <p>{error}</p>
         </div>
       )}
@@ -230,21 +213,18 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
         <div className="ai-results-floating">
           <div className="ai-results-floating-header">
             <h3 className="ai-results-floating-title">
-              ✨ {results.length} Rekomendasi AI
+              <HiSparkles
+                size={18}
+                style={{ marginRight: 6, verticalAlign: "middle" }}
+              />
+              {results.length} Rekomendasi AI
             </h3>
             <button
               className="ai-results-floating-close"
               onClick={() => setResults([])}
               aria-label="Close"
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M15 5L5 15M5 5l10 10"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
+              <HiX size={20} />
             </button>
           </div>
           <div className="ai-results-floating-grid">
@@ -267,13 +247,21 @@ const AIBottomSearch = forwardRef<AIBottomSearchHandle>((_, ref) => {
                   />
                 ) : (
                   <div className="ai-results-floating-poster-placeholder">
-                    🎬
+                    <HiFilm size={40} />
                   </div>
                 )}
                 <div className="card-body">
                   <div className="title">{result.title}</div>
                   <div className="meta">
-                    ⭐ {result.vote_average.toFixed(1)}
+                    <HiStar
+                      size={14}
+                      style={{
+                        marginRight: 4,
+                        verticalAlign: "middle",
+                        display: "inline-block",
+                      }}
+                    />
+                    {result.vote_average.toFixed(1)}
                     {result.release_date
                       ? ` · ${result.release_date.slice(0, 4)}`
                       : ""}

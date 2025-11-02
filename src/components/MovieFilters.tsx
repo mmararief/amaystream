@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { HiSearch, HiChevronDown, HiChevronRight } from "react-icons/hi";
 import { fetchGenres, type DiscoverFilters } from "../services/tmdb";
 
 type Props = {
@@ -27,16 +28,19 @@ export default function MovieFilters({ filters, onChange }: Props) {
   }, []);
 
   const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 1940 + 1 }, (_, i) => currentYear - i);
+  const years = Array.from(
+    { length: currentYear - 1940 + 1 },
+    (_, i) => currentYear - i
+  );
 
   const handleChange = (key: keyof DiscoverFilters, value: any) => {
     onChange({ ...filters, [key]: value === "" ? null : value });
   };
 
   const hasActiveFilters =
-    filters.genre !== null && filters.genre !== undefined ||
-    filters.year !== null && filters.year !== undefined ||
-    filters.minRating !== null && filters.minRating !== undefined ||
+    (filters.genre !== null && filters.genre !== undefined) ||
+    (filters.year !== null && filters.year !== undefined) ||
+    (filters.minRating !== null && filters.minRating !== undefined) ||
     filters.sortBy !== undefined;
 
   const clearFilters = () => {
@@ -55,9 +59,15 @@ export default function MovieFilters({ filters, onChange }: Props) {
         onClick={() => setIsOpen(!isOpen)}
         type="button"
       >
-        <span>🔍 Filter & Urutkan</span>
+        <HiSearch
+          size={18}
+          style={{ marginRight: 8, verticalAlign: "middle" }}
+        />
+        <span>Filter & Urutkan</span>
         {hasActiveFilters && <span className="filter-badge">●</span>}
-        <span style={{ marginLeft: "auto" }}>{isOpen ? "▼" : "▶"}</span>
+        <span style={{ marginLeft: "auto" }}>
+          {isOpen ? <HiChevronDown size={18} /> : <HiChevronRight size={18} />}
+        </span>
       </button>
 
       {isOpen && (
@@ -67,7 +77,12 @@ export default function MovieFilters({ filters, onChange }: Props) {
             <select
               className="filter-select"
               value={filters.genre || ""}
-              onChange={(e) => handleChange("genre", e.target.value ? Number(e.target.value) : null)}
+              onChange={(e) =>
+                handleChange(
+                  "genre",
+                  e.target.value ? Number(e.target.value) : null
+                )
+              }
               disabled={isLoading}
             >
               <option value="">Semua Genre</option>
@@ -84,7 +99,12 @@ export default function MovieFilters({ filters, onChange }: Props) {
             <select
               className="filter-select"
               value={filters.year || ""}
-              onChange={(e) => handleChange("year", e.target.value ? Number(e.target.value) : null)}
+              onChange={(e) =>
+                handleChange(
+                  "year",
+                  e.target.value ? Number(e.target.value) : null
+                )
+              }
             >
               <option value="">Semua Tahun</option>
               {years.map((y) => (
@@ -100,7 +120,12 @@ export default function MovieFilters({ filters, onChange }: Props) {
             <select
               className="filter-select"
               value={filters.minRating || ""}
-              onChange={(e) => handleChange("minRating", e.target.value ? Number(e.target.value) : null)}
+              onChange={(e) =>
+                handleChange(
+                  "minRating",
+                  e.target.value ? Number(e.target.value) : null
+                )
+              }
             >
               <option value="">Tanpa Batas</option>
               <option value="8">8.0+ (Sangat Bagus)</option>
@@ -115,7 +140,9 @@ export default function MovieFilters({ filters, onChange }: Props) {
             <select
               className="filter-select"
               value={filters.sortBy || ""}
-              onChange={(e) => handleChange("sortBy", e.target.value || undefined)}
+              onChange={(e) =>
+                handleChange("sortBy", e.target.value || undefined)
+              }
             >
               <option value="">Default</option>
               <option value="popularity.desc">Populer (Teratas)</option>
@@ -128,7 +155,11 @@ export default function MovieFilters({ filters, onChange }: Props) {
           </div>
 
           {hasActiveFilters && (
-            <button className="filter-clear" onClick={clearFilters} type="button">
+            <button
+              className="filter-clear"
+              onClick={clearFilters}
+              type="button"
+            >
               Hapus Semua Filter
             </button>
           )}
@@ -137,4 +168,3 @@ export default function MovieFilters({ filters, onChange }: Props) {
     </div>
   );
 }
-

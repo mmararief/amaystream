@@ -32,31 +32,30 @@ Jika tidak menemukan film yang cocok atau deskripsi tidak jelas, kembalikan: {"e
 
 Jawab hanya dengan JSON, tanpa penjelasan tambahan.`;
 
+  const isDev = import.meta.env.DEV;
+  
   try {
-    console.log('[Gemini] Request prompt:', prompt);
+    if (isDev) console.log('[Gemini] Request prompt:', prompt);
     
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
       contents: prompt,
     });
 
-    console.log('[Gemini] Raw response:', response);
-
     const text = (response as any).text || String(response) || '';
-    console.log('[Gemini] Extracted text:', text);
+    if (isDev) console.log('[Gemini] Extracted text:', text);
     
     // Extract JSON from response (handle markdown code blocks if present)
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-      console.warn('[Gemini] No JSON found in response');
+      if (isDev) console.warn('[Gemini] No JSON found in response');
       return [];
     }
 
     const parsed = JSON.parse(jsonMatch[0]);
-    console.log('[Gemini] Parsed JSON:', parsed);
     
     if (parsed.error || !parsed.movies || !Array.isArray(parsed.movies)) {
-      console.warn('[Gemini] Invalid response structure:', parsed);
+      if (isDev) console.warn('[Gemini] Invalid response structure:', parsed);
       return [];
     }
 
@@ -64,8 +63,6 @@ Jawab hanya dengan JSON, tanpa penjelasan tambahan.`;
     const titles = parsed.movies
       .map((m: any) => m.title)
       .filter((title: any) => title && typeof title === 'string');
-    
-    console.log('[Gemini] Extracted titles:', titles);
 
     // Search each title in TMDB and get the first result
     const searchPromises = titles.map(async (title: string) => {
@@ -74,16 +71,14 @@ Jawab hanya dengan JSON, tanpa penjelasan tambahan.`;
         if (searchResult.results && searchResult.results.length > 0) {
           // Take the first result (most relevant)
           const movie = searchResult.results[0];
-          console.log(`[Gemini] Found TMDB movie for "${title}":`, movie.id, movie.title);
           return {
             id: movie.id,
             title: movie.title
           };
         }
-        console.warn(`[Gemini] No TMDB results for title: "${title}"`);
         return null;
       } catch (err) {
-        console.error(`[Gemini] Error searching TMDB for "${title}":`, err);
+        if (isDev) console.error(`[Gemini] Error searching TMDB for "${title}":`, err);
         return null;
       }
     });
@@ -91,10 +86,10 @@ Jawab hanya dengan JSON, tanpa penjelasan tambahan.`;
     const searchResults = await Promise.all(searchPromises);
     const validResults = searchResults.filter((r): r is { id: number; title: string } => r !== null);
     
-    console.log('[Gemini] Final results after TMDB search:', validResults);
+    if (isDev) console.log('[Gemini] Final results after TMDB search:', validResults);
     return validResults;
   } catch (error) {
-    console.error('[Gemini] Search error:', error);
+    if (isDev) console.error('[Gemini] Search error:', error);
     return [];
   }
 }

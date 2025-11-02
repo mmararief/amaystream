@@ -1,7 +1,9 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useRef } from "react";
+import { HiHome, HiSearch, HiCode, HiFilm } from "react-icons/hi";
 import AIBottomSearch from "./components/AIBottomSearch";
 import type { AIBottomSearchHandle } from "./components/AIBottomSearch";
+import Footer from "./components/Footer";
 import { AISearchProvider } from "./contexts/AISearchContext";
 
 function Navbar() {
@@ -11,7 +13,7 @@ function Navbar() {
     <header className="app-header">
       <div className="app-header-inner">
         <Link to="/" className="brand">
-          <span className="brand-icon">🎬</span>
+          <HiFilm className="brand-icon" size={24} />
           <span>AmayStream</span>
         </Link>
         <nav className="nav-links">
@@ -19,15 +21,17 @@ function Navbar() {
             to="/"
             className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
           >
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                fill="none"
-              />
-            </svg>
+            <HiHome size={18} />
             Beranda
+          </Link>
+          <Link
+            to="/search"
+            className={`nav-link ${
+              location.pathname === "/search" ? "active" : ""
+            }`}
+          >
+            <HiSearch size={18} />
+            Search
           </Link>
           <Link
             to="/development"
@@ -35,14 +39,7 @@ function Navbar() {
               location.pathname === "/development" ? "active" : ""
             }`}
           >
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                fill="none"
-              />
-            </svg>
+            <HiCode size={18} />
             Dev
           </Link>
         </nav>
@@ -65,6 +62,7 @@ export default function App() {
         <main className="main">
           <Outlet />
         </main>
+        <Footer />
         <AIBottomSearch ref={aiSearchRef} />
       </div>
     </AISearchProvider>

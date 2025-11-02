@@ -1,16 +1,23 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { HiX, HiPlay } from "react-icons/hi";
 
-export default function MoviePlayer() {
+export default function TVPlayer() {
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const season = searchParams.get("season") || "1";
+  const episode = searchParams.get("episode") || "1";
   const [showNotice, setShowNotice] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Scroll to top when movie ID changes
+  // Ensure season and episode are valid numbers
+  const seasonNum = parseInt(season, 10) || 1;
+  const episodeNum = parseInt(episode, 10) || 1;
+
+  // Scroll to top when TV ID changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [id]);
+  }, [id, season, episode]);
 
   useEffect(() => {
     const dismissed = localStorage.getItem("hide_adblock_notice") === "1";
@@ -26,11 +33,12 @@ export default function MoviePlayer() {
       }, 1000);
       return () => clearTimeout(timer);
     }
-  }, [id]);
+  }, [id, season, episode]);
 
-  const src = `https://www.vidking.net/embed/movie/${id}?color=9146ff&autoPlay=true`;
+  // Vidking embed URL for TV shows with all features
+  const src = `https://www.vidking.net/embed/tv/${id}/${seasonNum}/${episodeNum}?color=e50914&autoPlay=true&nextEpisode=true&episodeSelector=true`;
 
-  if (!id) return <p>TMDB id tidak valid.</p>;
+  if (!id) return <p>TV ID tidak valid.</p>;
 
   return (
     <div>
@@ -55,9 +63,12 @@ export default function MoviePlayer() {
         </div>
       )}
       <div className="player-header">
-        <Link to="/" className="back-link">
+        <Link to={`/tv/${id}`} className="back-link">
           ← Kembali
         </Link>
+        <div className="player-info">
+          Season {seasonNum} • Episode {episodeNum}
+        </div>
       </div>
       <div className="player-box">
         {isLoading ? (

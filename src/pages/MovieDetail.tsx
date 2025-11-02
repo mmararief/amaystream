@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { HiPlay, HiStar } from "react-icons/hi2";
 import {
   fetchMovieDetail,
   fetchMovieCredits,
   fetchSimilarMovies,
+  fetchMovieVideos,
   buildImageUrl,
 } from "../services/tmdb";
 import { useSEO } from "../hooks/useSEO";
@@ -35,14 +37,23 @@ export default function MovieDetailPage() {
   const [similar, setSimilar] = useState<
     { id: number; title: string; poster_path: string | null }[]
   >([]);
+  const [videos, setVideos] = useState<
+    { key: string; name: string; type: string; site: string }[]
+  >([]);
+  const [selectedVideo, setSelectedVideo] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Scroll to top when movie ID changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [movieId]);
 
   useEffect(() => {
     let cancelled = false;
     async function load() {
       setIsLoading(true);
       try {
-        const [m, c, s] = await Promise.all([
+        const [m, c, s, v] = await Promise.all([
           fetchMovieDetail(movieId) as Promise<MovieDetail>,
           fetchMovieCredits(movieId) as Promise<{
             cast: {
@@ -59,11 +70,33 @@ export default function MovieDetailPage() {
               poster_path: string | null;
             }[];
           }>,
+          fetchMovieVideos(movieId) as Promise<{
+            results: Array<{
+              key: string;
+              name: string;
+              type: string;
+              site: string;
+            }>;
+          }>,
         ]);
         if (!cancelled) {
           setMovie(m);
           setCast(c.cast.slice(0, 12));
           setSimilar(s.results.slice(0, 12));
+          // Filter YouTube videos only and prioritize trailers
+          const youtubeVideos = v.results
+            .filter((video) => video.site === "YouTube")
+            .sort((a, b) => {
+              // Prioritize trailers
+              if (a.type === "Trailer" && b.type !== "Trailer") return -1;
+              if (a.type !== "Trailer" && b.type === "Trailer") return 1;
+              return 0;
+            });
+          setVideos(youtubeVideos);
+          // Auto-select first trailer if available, otherwise first video
+          if (youtubeVideos.length > 0) {
+            setSelectedVideo(youtubeVideos[0].key);
+          }
         }
       } finally {
         if (!cancelled) setIsLoading(false);
@@ -102,7 +135,67 @@ export default function MovieDetailPage() {
       : undefined,
   });
 
-  if (isLoading) return <p>Memuat...</p>;
+  if (isLoading) {
+    return (
+      <div className="movie-detail-skeleton">
+        {/* Backdrop skeleton */}
+        <div className="skeleton skeleton-backdrop"></div>
+
+        {/* Detail grid skeleton */}
+        <div className="detail-grid">
+          {/* Poster skeleton */}
+          <div className="skeleton skeleton-poster"></div>
+
+          {/* Info skeleton */}
+          <div className="skeleton-info">
+            <div className="skeleton skeleton-title"></div>
+            <div className="skeleton skeleton-button"></div>
+            <div className="skeleton skeleton-meta"></div>
+            <div className="skeleton-genres">
+              <div className="skeleton skeleton-genre"></div>
+              <div className="skeleton skeleton-genre"></div>
+              <div className="skeleton skeleton-genre"></div>
+            </div>
+            <div className="skeleton skeleton-overview"></div>
+            <div className="skeleton skeleton-overview"></div>
+            <div className="skeleton skeleton-overview short"></div>
+          </div>
+        </div>
+
+        {/* Cast skeleton */}
+        <section className="skeleton-section">
+          <div className="skeleton skeleton-section-title"></div>
+          <div className="cast-grid">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton skeleton-card-image"></div>
+                <div className="skeleton-card-content">
+                  <div className="skeleton skeleton-card-title"></div>
+                  <div className="skeleton skeleton-card-subtitle"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Similar skeleton */}
+        <section className="skeleton-section">
+          <div className="skeleton skeleton-section-title"></div>
+          <div className="similar-grid">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton skeleton-card-image"></div>
+                <div className="skeleton-card-content">
+                  <div className="skeleton skeleton-card-title"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   if (!movie) return <p>Film tidak ditemukan.</p>;
 
   return (
@@ -140,11 +233,19 @@ export default function MovieDetailPage() {
                 boxShadow: "0 10px 20px rgba(229,9,20,0.35)",
               }}
             >
-              Tonton ▶
+              Tonton Sekarang
             </Link>
           </div>
           <div style={{ color: "#9ca3af", marginBottom: 8 }}>
-            ⭐ {movie.vote_average.toFixed(1)}
+            <HiStar
+              size={16}
+              style={{
+                marginRight: 4,
+                verticalAlign: "middle",
+                display: "inline-block",
+              }}
+            />
+            {movie.vote_average.toFixed(1)}
             {movie.release_date ? ` · ${movie.release_date.slice(0, 4)}` : ""}
             {movie.runtime ? ` · ${movie.runtime}m` : ""}
           </div>
@@ -175,6 +276,58 @@ export default function MovieDetailPage() {
           <p style={{ lineHeight: 1.6, color: "#cbd5e1" }}>{movie.overview}</p>
         </div>
       </div>
+
+      {videos.length > 0 && (
+        <section style={{ marginBottom: 24 }}>
+          <h2 style={{ marginBottom: 12, color: "#e5e7eb" }}>
+            Trailer & Video
+          </h2>
+          {selectedVideo && (
+            <div style={{ marginBottom: 16 }}>
+              <div className="video-container">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src={`https://www.youtube.com/embed/${selectedVideo}`}
+                  title="Movie Trailer"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    border: "none",
+                    borderRadius: "12px",
+                  }}
+                />
+              </div>
+            </div>
+          )}
+          {videos.length > 1 && (
+            <div className="video-list">
+              {videos.map((video) => (
+                <button
+                  key={video.key}
+                  onClick={() => setSelectedVideo(video.key)}
+                  className={`video-item ${
+                    selectedVideo === video.key ? "active" : ""
+                  }`}
+                  type="button"
+                >
+                  <HiPlay className="video-play-icon" />
+                  <span className="video-name">{video.name}</span>
+                  {video.type === "Trailer" && (
+                    <span className="video-badge">Trailer</span>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       <section style={{ marginBottom: 24 }}>
         <h2 style={{ marginBottom: 12, color: "#e5e7eb" }}>Pemeran</h2>

@@ -1,4 +1,11 @@
 import { useState } from "react";
+import {
+  HiStar,
+  HiSparkles,
+  HiSearch,
+  HiClock,
+  HiExclamation,
+} from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { searchMovieByDescription } from "../services/gemini";
 import { buildImageUrl, fetchMovieDetail } from "../services/tmdb";
@@ -57,11 +64,11 @@ export default function AISearch() {
   return (
     <div className={`ai-search ${isSearching ? "ai-search-active" : ""}`}>
       <div className="ai-search-header">
-        <div className="ai-icon">✨</div>
+        <HiSparkles className="ai-icon" size={24} />
         <h3 style={{ margin: 0, color: "#e5e7eb" }}>AI Search</h3>
       </div>
       <p style={{ color: "#9ca3af", fontSize: 13, marginTop: 4 }}>
-        Bingung mau cari film apa? Kamu bisa cerita disini loo ✨
+        Bingung mau cari film apa? Kamu bisa cerita disini loo
       </p>
 
       <div className="ai-input-group">
@@ -79,7 +86,7 @@ export default function AISearch() {
           disabled={isSearching || !query.trim()}
           className="ai-search-btn"
         >
-          {isSearching ? "⏳" : "🔍"}
+          {isSearching ? <HiClock size={18} /> : <HiSearch size={18} />}
         </button>
       </div>
 
@@ -92,7 +99,11 @@ export default function AISearch() {
 
       {error && (
         <div className="ai-error">
-          <span>⚠️</span> {error}
+          <HiExclamation
+            size={18}
+            style={{ marginRight: 8, verticalAlign: "middle" }}
+          />
+          {error}
         </div>
       )}
 
@@ -100,7 +111,11 @@ export default function AISearch() {
         <div className="ai-results">
           <div className="ai-results-header">
             <span style={{ color: "#22d3ee", fontSize: 14, fontWeight: 600 }}>
-              ✨ {results.length} Rekomendasi ditemukan
+              <HiSparkles
+                size={18}
+                style={{ marginRight: 6, verticalAlign: "middle" }}
+              />
+              {results.length} Rekomendasi ditemukan
             </span>
           </div>
           <div className="ai-results-grid">
@@ -130,12 +145,26 @@ export default function AISearch() {
                   <div className="ai-result-info">
                     <div className="ai-result-title">{result.title}</div>
                     <div className="ai-result-meta">
-                      ⭐ {result.vote_average.toFixed(1)}
+                      <HiStar
+                        size={14}
+                        style={{
+                          marginRight: 4,
+                          verticalAlign: "middle",
+                          display: "inline-block",
+                        }}
+                      />
+                      {result.vote_average.toFixed(1)}
                       {result.release_date
                         ? ` · ${result.release_date.slice(0, 4)}`
                         : ""}
                     </div>
-                    <div className="ai-result-badge">✨ AI</div>
+                    <div className="ai-result-badge">
+                      <HiSparkles
+                        size={12}
+                        style={{ marginRight: 4, verticalAlign: "middle" }}
+                      />
+                      AI
+                    </div>
                   </div>
                 </div>
               </Link>
