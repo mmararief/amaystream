@@ -10,6 +10,8 @@ import MoviePlayer from "./pages/MoviePlayer";
 import TVDetail from "./pages/TVDetail";
 import TVPlayer from "./pages/TVPlayer";
 import Development from "./pages/Development";
+import SportsLive from "./pages/SportsLive";
+import SportsPlayer from "./pages/SportsPlayer";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +25,8 @@ const router = createBrowserRouter([
       { path: "tv/:id", element: <TVDetail /> },
       { path: "tv/:id/watch", element: <TVPlayer /> },
       { path: "development", element: <Development /> },
+      { path: "sports", element: <SportsLive /> },
+      { path: "sports/:source/:id/watch", element: <SportsPlayer /> },
     ],
   },
 ]);

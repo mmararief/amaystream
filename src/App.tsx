@@ -56,6 +56,15 @@ function Navbar() {
               Beranda
             </Link>
             <Link
+              to="/sports"
+              className={`nav-link ${
+                location.pathname.startsWith("/sports") ? "active" : ""
+              }`}
+            >
+              <HiFilm size={18} />
+              Sports
+            </Link>
+            <Link
               to="/search"
               className={`nav-link ${
                 location.pathname === "/search" ? "active" : ""
@@ -115,6 +124,16 @@ function Navbar() {
           >
             <HiHome size={20} />
             <span>Beranda</span>
+          </Link>
+          <Link
+            to="/sports"
+            className={`mobile-nav-link ${
+              location.pathname.startsWith("/sports") ? "active" : ""
+            }`}
+            onClick={closeMenu}
+          >
+            <HiFilm size={20} />
+            <span>Sports</span>
           </Link>
           <Link
             to="/search"
