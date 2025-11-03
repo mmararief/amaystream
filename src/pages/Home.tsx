@@ -78,8 +78,8 @@ export default function Home() {
       : "AmayStream",
     description:
       debouncedQuery && movies.length > 0
-        ? `Temukan ${movies.length} hasil pencarian untuk "${debouncedQuery}" di AmayStream. Streaming film gratis tanpa iklan.`
-        : "Jelajahi koleksi film populer terbaru. Streaming film gratis tanpa iklan dengan kualitas HD di AmayStream.",
+        ? `Temukan ${movies.length} hasil pencarian untuk "${debouncedQuery}" di AmayStream. Streaming film gratis & sports stream.`
+        : "Jelajahi koleksi film populer terbaru. Streaming film gratis & sports stream dengan kualitas HD di AmayStream.",
     keywords: debouncedQuery
       ? `${debouncedQuery}, film, streaming, nonton film`
       : "film populer, film terbaru, streaming film, film gratis",

@@ -18,9 +18,9 @@ type SEOProps = {
   };
 };
 
-const DEFAULT_TITLE = "AmayStream - Streaming Film Gratis Tanpa Iklan";
+const DEFAULT_TITLE = "AmayStream - Streaming Film Gratis & Sports Stream";
 const DEFAULT_DESCRIPTION =
-  "Streaming film gratis tanpa iklan. Tonton film terbaru dan populer dengan kualitas HD. Platform streaming film Indonesia terbaik.";
+  "Streaming film gratis & sports stream. Tonton film terbaru dan populer dengan kualitas HD. Platform streaming film Indonesia terbaik.";
 const DEFAULT_IMAGE = "/og-image.jpg";
 const BASE_URL = "https://amaystream.vercel.app";
 
