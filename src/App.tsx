@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { HiHome, HiSearch, HiCode, HiFilm, HiMenu, HiX } from "react-icons/hi";
+import { Analytics } from "@vercel/analytics/react";
 import AIBottomSearch from "./components/AIBottomSearch";
 import type { AIBottomSearchHandle } from "./components/AIBottomSearch";
 import Footer from "./components/Footer";
@@ -18,12 +19,12 @@ function Navbar() {
   // Prevent body scroll when menu is open
   useEffect(() => {
     if (isMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isMenuOpen]);
 
@@ -46,7 +47,9 @@ function Navbar() {
           <nav className="nav-links">
             <Link
               to="/"
-              className={`nav-link ${location.pathname === "/" ? "active" : ""}`}
+              className={`nav-link ${
+                location.pathname === "/" ? "active" : ""
+              }`}
             >
               <HiHome size={18} />
               Beranda
@@ -104,7 +107,9 @@ function Navbar() {
         <div className="mobile-menu-links">
           <Link
             to="/"
-            className={`mobile-nav-link ${location.pathname === "/" ? "active" : ""}`}
+            className={`mobile-nav-link ${
+              location.pathname === "/" ? "active" : ""
+            }`}
             onClick={closeMenu}
           >
             <HiHome size={20} />
@@ -153,6 +158,7 @@ export default function App() {
         <Footer />
         <AIBottomSearch ref={aiSearchRef} />
       </div>
+      <Analytics />
     </AISearchProvider>
   );
 }
