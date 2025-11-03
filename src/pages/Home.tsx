@@ -55,6 +55,10 @@ export default function Home() {
     sortBy: undefined,
   });
   const observerTarget = useRef<HTMLDivElement | null>(null);
+  const [showSportsNotice, setShowSportsNotice] = useState<boolean>(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("sports_notice_dismissed") !== "1";
+  });
 
   const debouncedQuery = useDebounce(query, 400);
   const hasActiveFilters =
@@ -208,6 +212,27 @@ export default function Home() {
   return (
     <div className="home-page">
       <AISearchNotification />
+      {showSportsNotice && (
+        <div className="notice" style={{ marginTop: 8 }}>
+          <strong>Baru!</strong> Kini tersedia <strong>Sports Stream</strong>.
+          Nikmati siaran pertandingan dan match center.{" "}
+          <Link to="/sports" className="footer-link-inline">
+            Lihat sekarang
+          </Link>
+          <button
+            className="notice-close"
+            onClick={() => {
+              setShowSportsNotice(false);
+              try {
+                localStorage.setItem("sports_notice_dismissed", "1");
+              } catch {}
+            }}
+            aria-label="Tutup pemberitahuan"
+          >
+            ×
+          </button>
+        </div>
+      )}
       <BannerCarousel movies={trending} />
 
       {!debouncedQuery && !hasActiveFilters && trending.length > 0 && (
