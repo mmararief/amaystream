@@ -2,6 +2,7 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import { HiHome, HiSearch, HiCode, HiFilm, HiMenu, HiX } from "react-icons/hi";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import AIBottomSearch from "./components/AIBottomSearch";
 import type { AIBottomSearchHandle } from "./components/AIBottomSearch";
 import Footer from "./components/Footer";
@@ -159,6 +160,7 @@ export default function App() {
         <AIBottomSearch ref={aiSearchRef} />
       </div>
       <Analytics />
+      <SpeedInsights />
     </AISearchProvider>
   );
 }
