@@ -157,41 +157,43 @@ export default function SportsPlayer() {
       {!loading && !error && current && (
         <div className="player-grid">
           <div>
-            {matchInfo && (
-              <div className="player-match">
-                <div className="player-team">
-                  <div className="team-badge-lg">
-                    {matchInfo.teams?.home?.badge ? (
-                      <img
-                        src={`https://streamed.pk/api/images/badge/${matchInfo.teams.home.badge}.webp`}
-                        alt={matchInfo.teams?.home?.name}
-                      />
-                    ) : null}
+            {matchInfo &&
+              matchInfo.teams?.home?.name &&
+              matchInfo.teams?.away?.name && (
+                <div className="player-match">
+                  <div className="player-team">
+                    <div className="team-badge-lg">
+                      {matchInfo.teams?.home?.badge ? (
+                        <img
+                          src={`https://streamed.pk/api/images/badge/${matchInfo.teams.home.badge}.webp`}
+                          alt={matchInfo.teams?.home?.name}
+                        />
+                      ) : null}
+                    </div>
+                    <strong>{matchInfo.teams?.home?.name ?? "Home"}</strong>
                   </div>
-                  <strong>{matchInfo.teams?.home?.name ?? "Home"}</strong>
-                </div>
-                <div className="player-vs">VS</div>
-                <div className="player-team right">
-                  <strong>{matchInfo.teams?.away?.name ?? "Away"}</strong>
-                  <div className="team-badge-lg">
-                    {matchInfo.teams?.away?.badge ? (
-                      <img
-                        src={`https://streamed.pk/api/images/badge/${matchInfo.teams.away.badge}.webp`}
-                        alt={matchInfo.teams?.away?.name}
-                      />
-                    ) : null}
+                  <div className="player-vs">VS</div>
+                  <div className="player-team right">
+                    <strong>{matchInfo.teams?.away?.name ?? "Away"}</strong>
+                    <div className="team-badge-lg">
+                      {matchInfo.teams?.away?.badge ? (
+                        <img
+                          src={`https://streamed.pk/api/images/badge/${matchInfo.teams.away.badge}.webp`}
+                          alt={matchInfo.teams?.away?.name}
+                        />
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="player-meta">
+                    <span>
+                      {new Date(matchInfo.date ?? Date.now()).toLocaleString()}
+                    </span>
+                    <span style={{ textTransform: "capitalize" }}>
+                      {matchInfo.category ?? ""}
+                    </span>
                   </div>
                 </div>
-                <div className="player-meta">
-                  <span>
-                    {new Date(matchInfo.date ?? Date.now()).toLocaleString()}
-                  </span>
-                  <span style={{ textTransform: "capitalize" }}>
-                    {matchInfo.category ?? ""}
-                  </span>
-                </div>
-              </div>
-            )}
+              )}
             {/* Source selector */}
             {altSources.length > 0 && (
               <div
@@ -245,12 +247,9 @@ export default function SportsPlayer() {
               <div id="apisports-container" />
             </div>
           )}
-          
+
           {/* Live Chat */}
-          <LiveChat 
-            matchId={`${source}:${id}`} 
-            matchTitle={title}
-          />
+          <LiveChat matchId={`${source}:${id}`} matchTitle={title} />
         </div>
       )}
     </div>

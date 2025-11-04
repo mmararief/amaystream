@@ -278,42 +278,50 @@ export default function SportsLive() {
                               className="sports-card-link"
                               style={{ display: "block" }}
                             >
-                              <div className="teams-hero">
-                                <div className="team-emblem">
-                                  {home?.badge ? (
-                                    <img
-                                      src={getBadgeUrl(home.badge)}
-                                      alt={home?.name}
-                                    />
-                                  ) : (
-                                    <span>
-                                      {home?.name?.slice(0, 1) ?? "H"}
+                              {home?.name && away?.name ? (
+                                <>
+                                  <div className="teams-hero">
+                                    <div className="team-emblem">
+                                      {home?.badge ? (
+                                        <img
+                                          src={getBadgeUrl(home.badge)}
+                                          alt={home?.name}
+                                        />
+                                      ) : (
+                                        <span>
+                                          {home?.name?.slice(0, 1) ?? "H"}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <span className="vs-badge">VS</span>
+                                    <div className="team-emblem">
+                                      {away?.badge ? (
+                                        <img
+                                          src={getBadgeUrl(away.badge)}
+                                          alt={away?.name}
+                                        />
+                                      ) : (
+                                        <span>
+                                          {away?.name?.slice(0, 1) ?? "A"}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="teams-legend">
+                                    <span title={home?.name}>
+                                      {home?.name ?? "Home"}
                                     </span>
-                                  )}
-                                </div>
-                                <span className="vs-badge">VS</span>
-                                <div className="team-emblem">
-                                  {away?.badge ? (
-                                    <img
-                                      src={getBadgeUrl(away.badge)}
-                                      alt={away?.name}
-                                    />
-                                  ) : (
-                                    <span>
-                                      {away?.name?.slice(0, 1) ?? "A"}
+                                    <span>vs</span>
+                                    <span title={away?.name}>
+                                      {away?.name ?? "Away"}
                                     </span>
-                                  )}
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="sports-card-title">
+                                  <h3>{m.title ?? "Match"}</h3>
                                 </div>
-                              </div>
-                              <div className="teams-legend">
-                                <span title={home?.name}>
-                                  {home?.name ?? "Home"}
-                                </span>
-                                <span>vs</span>
-                                <span title={away?.name}>
-                                  {away?.name ?? "Away"}
-                                </span>
-                              </div>
+                              )}
                               <div className="card-meta">
                                 <span className="time">{dateStr}</span>
                                 <span className="cat">{m.category}</span>
@@ -321,42 +329,50 @@ export default function SportsLive() {
                             </Link>
                           ) : (
                             <>
-                              <div className="teams-hero">
-                                <div className="team-emblem">
-                                  {home?.badge ? (
-                                    <img
-                                      src={getBadgeUrl(home.badge)}
-                                      alt={home?.name}
-                                    />
-                                  ) : (
-                                    <span>
-                                      {home?.name?.slice(0, 1) ?? "H"}
+                              {home?.name && away?.name ? (
+                                <>
+                                  <div className="teams-hero">
+                                    <div className="team-emblem">
+                                      {home?.badge ? (
+                                        <img
+                                          src={getBadgeUrl(home.badge)}
+                                          alt={home?.name}
+                                        />
+                                      ) : (
+                                        <span>
+                                          {home?.name?.slice(0, 1) ?? "H"}
+                                        </span>
+                                      )}
+                                    </div>
+                                    <span className="vs-badge">VS</span>
+                                    <div className="team-emblem">
+                                      {away?.badge ? (
+                                        <img
+                                          src={getBadgeUrl(away.badge)}
+                                          alt={away?.name}
+                                        />
+                                      ) : (
+                                        <span>
+                                          {away?.name?.slice(0, 1) ?? "A"}
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="teams-legend">
+                                    <span title={home?.name}>
+                                      {home?.name ?? "Home"}
                                     </span>
-                                  )}
-                                </div>
-                                <span className="vs-badge">VS</span>
-                                <div className="team-emblem">
-                                  {away?.badge ? (
-                                    <img
-                                      src={getBadgeUrl(away.badge)}
-                                      alt={away?.name}
-                                    />
-                                  ) : (
-                                    <span>
-                                      {away?.name?.slice(0, 1) ?? "A"}
+                                    <span>vs</span>
+                                    <span title={away?.name}>
+                                      {away?.name ?? "Away"}
                                     </span>
-                                  )}
+                                  </div>
+                                </>
+                              ) : (
+                                <div className="sports-card-title">
+                                  <h3>{m.title ?? "Match"}</h3>
                                 </div>
-                              </div>
-                              <div className="teams-legend">
-                                <span title={home?.name}>
-                                  {home?.name ?? "Home"}
-                                </span>
-                                <span>vs</span>
-                                <span title={away?.name}>
-                                  {away?.name ?? "Away"}
-                                </span>
-                              </div>
+                              )}
                               <div className="card-meta">
                                 <span className="time">{dateStr}</span>
                                 <span className="cat">{m.category}</span>
