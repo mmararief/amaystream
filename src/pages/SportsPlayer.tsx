@@ -5,6 +5,7 @@ import {
   type StreamedStream,
   type StreamedMatchSourceRef,
 } from "../services/streamed";
+import LiveChat from "../components/LiveChat";
 
 declare global {
   namespace JSX {
@@ -244,6 +245,12 @@ export default function SportsPlayer() {
               <div id="apisports-container" />
             </div>
           )}
+          
+          {/* Live Chat */}
+          <LiveChat 
+            matchId={`${source}:${id}`} 
+            matchTitle={title}
+          />
         </div>
       )}
     </div>

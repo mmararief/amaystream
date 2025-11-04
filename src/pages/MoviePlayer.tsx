@@ -73,6 +73,7 @@ export default function MoviePlayer() {
             width="100%"
             height="100%"
             frameBorder="0"
+            sandbox="allow-same-origin allow-scripts allow-presentation"
             allowFullScreen
             style={{ display: "block", border: "none" }}
           />
