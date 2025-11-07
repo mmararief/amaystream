@@ -87,7 +87,10 @@ export function getPosterUrlFromPosterPath(posterPath: string): string {
 	// poster field can be a path like "/api/images/proxy/xyz" (per docs examples)
 	// Ensure absolute URL
 	if (posterPath.startsWith("http")) return posterPath;
-	return `${BASE_URL}${posterPath}.webp`;
+	// If path already starts with /api/, just prefix BASE_URL
+	if (posterPath.startsWith("/api/")) return `${BASE_URL}${posterPath}.webp`;
+	// Otherwise treat as proxy id
+	return `${BASE_URL}/api/images/proxy/${posterPath}.webp`;
 }
 
 
