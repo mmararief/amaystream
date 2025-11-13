@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
-import { HiHome, HiSearch, HiCode, HiFilm, HiMenu, HiX } from "react-icons/hi";
+import { HiHome, HiSearch, HiCode, HiFilm, HiMenu, HiX, HiMoon, HiSun } from "react-icons/hi";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import AIBottomSearch from "./components/AIBottomSearch";
@@ -8,7 +8,7 @@ import type { AIBottomSearchHandle } from "./components/AIBottomSearch";
 import Footer from "./components/Footer";
 import { AISearchProvider } from "./contexts/AISearchContext";
 
-function Navbar() {
+function Navbar({ theme, onToggleTheme }: { theme: string, onToggleTheme: () => void }) {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -82,6 +82,12 @@ function Navbar() {
               <HiCode size={18} />
               Dev
             </Link>
+            <button
+              className="nav-link theme-toggle"
+              onClick={onToggleTheme}
+            >
+              {theme === "light" ? <HiMoon size={20} /> : <HiSun size={20} />}
+            </button>
           </nav>
           <button
             className="mobile-menu-toggle"
@@ -162,16 +168,30 @@ function Navbar() {
 }
 
 export default function App() {
+  const [theme, setTheme] = useState("dark");
   const aiSearchRef = useRef<AIBottomSearchHandle>(null);
 
   const openAISearch = () => {
     aiSearchRef.current?.openAndFocus();
   };
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    setTheme(savedTheme);
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  };
+
   return (
     <AISearchProvider openAISearch={openAISearch}>
       <div className="app-wrap">
-        <Navbar />
+        <Navbar theme={theme} onToggleTheme={toggleTheme} />
         <main className="main">
           <Outlet />
         </main>

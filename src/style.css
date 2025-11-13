@@ -8,6 +8,16 @@
   --accent: #22d3ee;
 }
 
+[data-theme='light'] {
+  --bg: #ffffff;
+  --bg-soft: #f9fafb;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --text: #111827;
+  --primary: #e50914;
+  --accent: #0ea5e9;
+}
+
 * { box-sizing: border-box; }
 
 html, body, #root {
@@ -165,6 +175,10 @@ body {
 
 .nav-external:hover {
   opacity: 1;
+}
+
+.theme-toggle {
+  margin-left: 8px;
 }
 
 
